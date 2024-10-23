@@ -249,7 +249,7 @@ const Updatevisitor = () => {
                 </Row>
                 <div>
                     {/* information */}
-                    <AddUserModal toggleModal={toggleModal} message={"suuccessfully saved user"} visible={show} title={"add user"} />
+                    <AddUserModal toggleModal={toggleModal} message={"suuccessfully updated user"} visible={show} title={"update successful !"} />
                 </div>
             </Container>
         </>

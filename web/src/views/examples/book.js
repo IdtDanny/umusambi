@@ -1,5 +1,5 @@
 import { useState } from "react";
-import InformationModal from "./informationModal";
+import PaymentModal from "./paymentModal";
 import {
     Badge,
     Table,
@@ -36,7 +36,6 @@ const Book = ({ data,reset }) => {
                 }
                 else {
                     setMessage("booked succesfully");
-                    setShow(true)
                 }
             })
             .catch(error => {
@@ -126,7 +125,7 @@ const Book = ({ data,reset }) => {
                 <CardFooter>
                     <Button
                         color="success"
-                        onClick={booknow}
+                        onClick={toggleModal}
                         style={{ width: '500px' }}
                     >
                         Book visit
@@ -136,7 +135,7 @@ const Book = ({ data,reset }) => {
 
             <div>
                 {/* information */}
-                <InformationModal openModal={show} toggleModal={toggleModal} message={"successfully booked"} />
+                <PaymentModal visible={show} booknow={booknow} toggleModal={toggleModal} message={"successfully booked"} />
             </div>
 
         </>

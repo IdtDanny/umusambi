@@ -163,7 +163,7 @@ const AddVisitor = () => {
                             style={{ color: 'black' }}
                             className="form-control-alternative"
                             id="input-address"
-                            placeholder="Home Address"
+                            placeholder="National identification"
                             type="text"
                             onChange={(e) => setUser({ ...user, nID: e.target.value })}
                             required
@@ -182,7 +182,7 @@ const AddVisitor = () => {
                             style={{ color: 'black' }}
                             className="form-control-alternative"
                             id="input-address"
-                            placeholder="Home Address"
+                            placeholder="User password"
                             type="text"
                             onChange={(e) => setUser({ ...user, password: e.target.value })}
                             required
@@ -246,7 +246,7 @@ const AddVisitor = () => {
         </Row>
         <div>
           {/* information */}
-          <AddUserModal toggleModal={toggleModal} message={"suuccessfully saved user"} visible={show} title={"add user"}/>
+          <AddUserModal toggleModal={toggleModal} message={"successfully saved user"} visible={show} title={"Succesfully !"}/>
         </div>
       </Container>
     </>
