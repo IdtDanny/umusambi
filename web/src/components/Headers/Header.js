@@ -8,8 +8,6 @@ const Header = () => {
   const [showReport, setShowReport] = useState(false)
   const [weeklyVisits, setWeeklyVisits] = useState({});
   const [dailyVisits, setDailyVisits] = useState({});
-  const [currentweek, setCurrentweek] = useState('')
-  const [previousweek, setPreviousweek] = useState('')
   const toggleShowReport = () => {
     setShowReport(!showReport);
   };

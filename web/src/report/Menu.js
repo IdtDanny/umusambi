@@ -9,8 +9,8 @@ import {
   Col,
 } from "reactstrap";
 import classnames from "classnames";
-import PaymentDatesReport from "./PaymentDateReport";
-import VisitedDateReport from "./VisitorDateReport";
+import PaymentDatesReport from "./paymentReport";
+import VisitedDateReport from "./VisitorReport";
 
 const ReportMenu = () => {
   const [activeTab, setActiveTab] = useState(1);

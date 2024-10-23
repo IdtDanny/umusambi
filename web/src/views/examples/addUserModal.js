@@ -10,6 +10,7 @@ const AddUserModal = ({message,toggleModal,visible,title}) => {
     return (
         <>
         <Modal
+            color="success"
             className="modal-dialog-centered"
             isOpen={visible}
             toggle={toggleModal}
@@ -34,9 +35,6 @@ const AddUserModal = ({message,toggleModal,visible,title}) => {
                 </p>
             </div>
             <div className="modal-footer">
-                <Button color="primary" type="button">
-                    Save changes
-                </Button>
                 <Button
                     className="ml-auto"
                     color="link"

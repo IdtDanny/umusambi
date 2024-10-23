@@ -1,91 +1,87 @@
-import React, { useRef, useEffect } from 'react';
-import { PDFExport } from '@progress/kendo-react-pdf';
+import jsPDF from 'jspdf';
+import Logo from '../assets/img/UmusambiLogo.jpg';
+import { formatDate } from 'helpers/dateFormatter';
+import formatDateToCustomFormat from 'helpers/dateFormatter';
+import 'jspdf-autotable';
 
+const GenerateVisitorPaymentPDF = (dataa,totalAmount) => {
+  const unit = 'mm';
+  const size = 'a4';
+  const orientation = 'portrait';
+  const doc = new jsPDF(orientation, unit, size);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const imageSource = Logo;
 
-const PdfpaymentReport = ({ info, setShow }) => {
-    const pdfExportComponent = useRef(null);
+  // Logo in the top-left corner
+  doc.addImage(imageSource, 'JPG', 5, 5, 50, 20);
 
-    const handleExportPDF = () => {
-        pdfExportComponent.current.save();
-    };
-    
-    const handlePrint = () => {
-        const printableContent = document.getElementById('printable-content');
-        const originalContent = document.body.innerHTML;
-      
-        // Apply print-specific styles (hide non-printable content)
-        document.body.innerHTML = printableContent.innerHTML;
-      
-        // Print the content
-        window.print();
-      
-        // Restore the original content
-        document.body.innerHTML = originalContent;
-      };
+  // Current Date in the top-right corner
+  const currentDate = formatDate(new Date());
+  const dateText = `Date: ${currentDate}`;
+  const dateTextWidth = doc.getTextWidth(dateText);
+  const dateTextX = pageWidth - dateTextWidth - 15;
+  doc.setFontSize(15);
+  doc.text(dateText, dateTextX, 25);
 
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = new Date().toLocaleDateString('en-US', options);
-    useEffect(() => {
-        handlePrint();
-        setShow();
-    }, []);
+  // Page Title
+  const titleText = "VISITOR PAYMENT REPORT";
+  doc.setFontSize(15);
+  doc.text(titleText, 15, 55);
 
-    return (
-        <div id="printable-content">
-            <PDFExport ref={pdfExportComponent} paperSize="A4">
-                <div style={{ textAlign: 'center', margin: '20px' }}>
-                    {/* Logo */}
-                    <img src={require("../assets/img/UmusambiLogo.jpg")} alt="Logo" style={{ width: '100px', height: '100px' }} />
-                    <div style={{ marginTop: '10px' }}>
-                        <h1 style={{ color: 'black', margin: '0', padding: '10px 0' }}>
-                            <em>UMUSAMBI VILLAGE SYSTEM</em>
-                        </h1>
-                        <p style={{ margin: '0', fontSize: '14px' }}>Kigali, Rwanda</p>
-                        <p style={{ margin: '0', fontSize: '14px' }}>Kabuga, Gasabo</p>
-                    </div>
-                    <hr />
-                    <h2>Payment report</h2>
-                    <hr />
-                    <h3>Report on {formattedDate}</h3>
-                </div>
-                <h3>Visitors</h3>
-                <div style={{ margin: '40px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                            <tr style={{ backgroundColor: '#f2f2f2' }}>
-                                <th style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'left' }}>First name</th>
-                                <th style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'left' }}>Last name</th>
-                                <th style={{ padding: '10px', border: '1px solid #ddd', textAlign: 'left' }}>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {info.visitors.map((data, index) => (
-                                <tr key={index}>
-                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{data.visitor.firstname}</td>
-                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{data.visitor.lastname}</td>
-                                    <td style={{ padding: '10px', border: '1px solid #ddd' }}>{data.fees}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <h3>Total amount received</h3>
-                <table style={{ margin: '20px auto', borderCollapse: 'collapse', border: '1px solid black' }}>
-                    <tbody>
-                        <tr>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>Total Amount</td>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{info.totalPayments}</td> {/* Replace with actual value */}
-                        </tr>
-                    </tbody>
-                </table>
+  // Separator Line
+  doc.setLineWidth(0.5);
+  doc.line(15, 60, pageWidth - 15, 60);
 
-                <div style={{ marginTop: '200px', textAlign: 'center' }}>
-                    Kigali, Rwanda Done on {formattedDate}
-                    <p style={{ color: 'black' }}> {new Date().getFullYear()} UMUSAMBI VILLAGE SYSTEM</p>
-                </div>
-            </PDFExport>
-        </div>
-    );
+  // Prepare data for the table
+  let printableData = [];
+  dataa.forEach((data, index) => {
+    const visitorName = `${data.visitor.firstname} ${data.visitor.lastname}`;
+    const amountPaid = `${data.fees} RWF`;
+    const paymentDate = formatDateToCustomFormat(data.createdAt);
+    const nationalID = data.visitor.nID;
+    printableData.push({
+      visitorName, amountPaid, paymentDate, nationalID
+    });
+  });
+
+  const printData = printableData.map((data, index) => [
+    index + 1,
+    data.visitorName,
+    data.amountPaid,
+    data.paymentDate,
+    data.nationalID,
+  ]);
+printData.push(["Total Amount", "", "", "", `  ${totalAmount} RWF`]);
+
+  // Auto-generate a table in the PDF using autoTable
+  doc.autoTable({
+    head: [['No.', 'Visitor Name', 'Amount Paid', 'Payment Date', 'National ID ']],
+    body: printData,
+    startY: 75,
+    margin: { top: 5, bottom: 5 }
+  });
+
+  // Signature
+  const lineHeight = 15;
+  const signatureText = `Generated by Visitor Management System`;
+  doc.setFontSize(11);
+  doc.text(signatureText, 15, doc.autoTable.previous.finalY + lineHeight);
+
+  // Final Line
+  doc.setDrawColor('#739900');
+  doc.line(15, doc.autoTable.previous.finalY + lineHeight * 2, pageWidth - 15, doc.autoTable.previous.finalY + lineHeight * 2);
+
+  // Address Text
+  const addressText = 'KN 25 Rd, KG 1 Ave, P.O. Box 0033, Nyarugenge, Kigali, Rwanda';
+  const textFontSize = 8;
+  const addressTextWidth = doc.getTextWidth(addressText);
+  const addressTextX = (pageWidth - addressTextWidth) / 2;
+
+  doc.setFontSize(textFontSize);
+  doc.text(addressText, addressTextX, doc.autoTable.previous.finalY + lineHeight * 3);
+
+  // Save PDF
+  doc.save(`visitor-payment-report-${currentDate}.pdf`);
 };
 
-export default PdfpaymentReport;
+export default GenerateVisitorPaymentPDF;

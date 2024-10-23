@@ -17,6 +17,8 @@ import {
 // core components
 import Header from "components/Headers/Header";
 import Navbar from "components/Navbars/Navbar.js";
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddVisitor = () => {
   const [message, setMessage] = useState('');
@@ -48,25 +50,34 @@ const AddVisitor = () => {
     }
     fetch("http://localhost:7000/api/admin/addvisitor", requestOptions)
       .then((response) => {
-        console.log(response);
-        console.log(response.status);
         if (response.status === 200) {
           toggleModal()
           setMessage("User saved successfully")
+          toast.success("successfull saved user", {
+            position: "top-left"
+          });
         }
         else if (response.status === 204) {
-          setMessage("User already exists")
+          toast.warning("User already exists", {
+            position: "top-left"
+          });
         }
         else if (response.status === 405) {
-          setMessage("email already used");
+          toast.warning("Email already exists", {
+            position: "top-left"
+          });
         }
         else {
-          setMessage("Not able to save");
+          toast.error("Unable to save data", {
+            position: "top-left"
+          });
         }
       })
       .catch(error => {
         console.log(error.message)
-        setMessage("connect your server")
+        toast.error("server error", {
+          position: "top-left"
+        });
       })
   }
   return (
@@ -247,6 +258,7 @@ const AddVisitor = () => {
         <div>
           {/* information */}
           <AddUserModal toggleModal={toggleModal} message={"successfully saved user"} visible={show} title={"Succesfully !"}/>
+          <ToastContainer/>
         </div>
       </Container>
     </>

@@ -8,18 +8,14 @@ import {
   Row,
   Button,
 } from "reactstrap";
-import PdfVisitationReport from "./PdfVisitationReport";
-
+import GenerateVisitorReportPDF from "./PdfVisitationReport";
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const VisitedDateReport = () => {
   const [data, setData] = useState({
     startDate: "",
     endDate: "",
   });
-  const [showPrint, setShowPrint] = useState(false);
-  const [response, setResponse] = useState({});
-  const toggleShowPrint = () => {
-    setShowPrint(!showPrint);
-  };
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -34,19 +30,27 @@ const VisitedDateReport = () => {
       });
 
       const responseData = await response.json();
-      setResponse(responseData);
-      toggleShowPrint()
+      GenerateVisitorReportPDF(responseData.visitors)
+      toast.success("successfull downloaded report", {
+        position: "top-left"
+      });
     } catch (error) {
+      toast.error("unable to downloaded report", {
+        position: "top-left"
+      });
       console.error('Error:', error);
     }
   };
 
   return (
     <>
+      <div className="d-flex justify-content-center">
+        <h3 className="mb-3 text-success text-muted">Visitation report</h3>
+      </div>
       <Row>
         <Col>
           <small className="d-block text-uppercase font-weight-bold mb-3">
-            Start Date
+            Start date
           </small>
           <FormGroup>
             <InputGroup>
@@ -93,12 +97,10 @@ const VisitedDateReport = () => {
           </FormGroup>
         </Col>
       </Row>
-      <Button color="success" onClick={handleSubmit}>
+      <Button color="success" disabled={!data.endDate} onClick={handleSubmit}>
         Generate report
       </Button>
-      {showPrint && (
-        <PdfVisitationReport setShow={toggleShowPrint} info={response} />
-      )}
+      <ToastContainer/>
     </>
   );
 };

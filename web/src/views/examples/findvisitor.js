@@ -7,7 +7,8 @@ import {
     Row,
     Col,
 } from "reactstrap";
-
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const FindVisitor = ({ onNext, setVisitordata }) => {
     const [message, setMessage] = useState('');
 
@@ -30,7 +31,9 @@ const FindVisitor = ({ onNext, setVisitordata }) => {
         fetch("http://localhost:7000/api/admin/findonevisitor", requestOptions)
             .then((response) => {
                 if (!response.ok) {
-                    setMessage("an error occured")
+                    toast.error("server error", {
+                        position: "top-left"
+                      });
                 }
                 return response.json();
             })
@@ -38,6 +41,9 @@ const FindVisitor = ({ onNext, setVisitordata }) => {
                 console.log(data);
                 if (data.code === "no") {
                     setShow(false);
+                    toast.error("unable to find user", {
+                        position: "top-left"
+                      });
                 }
                 else {
                     if (data.code === "yes") {
@@ -45,7 +51,10 @@ const FindVisitor = ({ onNext, setVisitordata }) => {
                         setVisitordata(data.message)
                         setShow(true);
                         onNext();
-                        console.log(data.message);
+                        toast.success("successfull found user", {
+                            position: "top-left"
+                          });
+
                     }
                 }
             })
@@ -97,6 +106,7 @@ const FindVisitor = ({ onNext, setVisitordata }) => {
                         </div>
                     </Form >
                 </Col>
+                <ToastContainer/>
             </div>
         </>
     )

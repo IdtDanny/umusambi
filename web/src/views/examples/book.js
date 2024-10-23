@@ -9,10 +9,17 @@ import {
     CardFooter,
     CardBody
 } from "reactstrap";
-
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const Book = ({ data,reset }) => {
     const [message, setMessage] = useState('');
     const [show, setShow] = useState(false);
+    const initiatePayment=()=>{
+        toast.success("Initiated payment", {
+            position: "top-left"
+          });
+        setShow(true)
+    }
     const toggleModal = () => {
         setShow(!show);
         if(!(show===false))
@@ -32,10 +39,14 @@ const Book = ({ data,reset }) => {
         fetch("http://localhost:7000/api/visitor/book", requestOptions)
             .then((response) => {
                 if (!response.ok) {
-                    setMessage("unable to book please contact admin")
+                    toast.error("unable to book please contact admin", {
+                        position: "top-right"
+                      });
                 }
                 else {
-                    setMessage("booked succesfully");
+                    toast.success("Successfully payed", {
+                        position: "top-right"
+                      });
                 }
             })
             .catch(error => {
@@ -125,7 +136,7 @@ const Book = ({ data,reset }) => {
                 <CardFooter>
                     <Button
                         color="success"
-                        onClick={toggleModal}
+                        onClick={initiatePayment}
                         style={{ width: '500px' }}
                     >
                         Book visit
@@ -136,6 +147,7 @@ const Book = ({ data,reset }) => {
             <div>
                 {/* information */}
                 <PaymentModal visible={show} booknow={booknow} toggleModal={toggleModal} message={"successfully booked"} />
+                <ToastContainer/>
             </div>
 
         </>

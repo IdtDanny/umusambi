@@ -14,7 +14,8 @@ import {
 } from "reactstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const Login = () => {
   const [data, setData] = useState({
     username: "",
@@ -36,18 +37,24 @@ function loginHandler(e) {
             if (!response.ok) {
               console.log(response)
                 console.log("INVALID EMAIL OR PASSWORD");
-                setMsg("INVALID EMAIL OR PASSWORD")
+                toast.error("INVALID EMAIL OR PASSWORD!", {
+                  position: "top-left"
+                });
             }
             return response.json();
         })
         .then((data) => {
                 localStorage.setItem("token", JSON.stringify(data.token))
-                console.log(localStorage.getItem("token"))
                 if (data.hasOwnProperty("token")) {
+                  toast.success("successfull", {
+                    position: "top-left"
+                  });
                     navigate("/admin")
                 }
                 else {
-                    setMsg("incorrect password or email")
+                    toast.error("incorrect password or email!", {
+                      position: "top-left"
+                    });
                 }
             
         })
@@ -157,8 +164,8 @@ function loginHandler(e) {
           </CardBody>
         </Card>
         <Row className="mt-3">
-          
         </Row>
+        <ToastContainer/>
       </Col>
     </>
   );

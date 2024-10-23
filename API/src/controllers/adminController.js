@@ -79,7 +79,7 @@ class adminController {
         try {
             const visitors = await historyModel.find().populate('visitor');
             const visitor = await visitorModel.find({'_id' : visitors._id });
-            res.status(200).json(visitor)
+            res.status(200).json(visitors)
         } catch (error) {
             res.status(400).json(error.message);
         }

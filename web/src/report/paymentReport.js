@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PdfpaymentReport from "./PdfPaymentReport";
+import GenerateVisitorPaymentPDF from "./PdfPaymentReport";
 import {
   FormGroup,
   InputGroupAddon,
@@ -8,41 +8,44 @@ import {
   Col,
   Row,
   Button,
-  } from "reactstrap";
-
+} from "reactstrap";
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const PaymentDatesReport = () => {
   const [data, setData] = useState({
     startDate: "",
     endDate: "",
   });
-  const [response, setResponse] = useState({});
-    const [showPrint, setShowPrint] = useState(false);
-    const toggleShowPrint = () => {
-        setShowPrint(!showPrint);
-    };
-    const handleRequestData = async () => {
-      try {
-        const response = await fetch('http://localhost:7000/api/admin/paymentStats', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': JSON.parse(localStorage.getItem("token"))
-          },
-          body: JSON.stringify(data),
-        });
-  
-        const responseData = await response.json();
-        console.log(responseData)
-        setResponse(responseData);
-        toggleShowPrint()
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-  
-    return (
-        <>
-          <Row>
+  const handleRequestData = async () => {
+    try {
+      const response = await fetch('http://localhost:7000/api/admin/paymentStats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': JSON.parse(localStorage.getItem("token"))
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+      toast.success("successfull downloaded report", {
+        position: "top-left"
+      });
+      GenerateVisitorPaymentPDF(responseData.visitors,responseData.totalPayments)
+    } catch (error) {
+      toast.success("unable to download report", {
+        position: "top-left"
+      });
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <>
+      <div className="d-flex justify-content-center">
+        <h3 className="mb-3 text-success text-muted">Payment report</h3>
+      </div>
+      <Row>
         <Col>
           <small className="d-block text-uppercase font-weight-bold mb-3">
             Start Date
@@ -92,15 +95,13 @@ const PaymentDatesReport = () => {
           </FormGroup>
         </Col>
       </Row>
-      <Button color="success" onClick={handleRequestData}>
+      <Button color="success" disabled={!data.endDate} onClick={handleRequestData}>
         Generate report
       </Button>
-      {showPrint && (
-        <PdfpaymentReport setShow={toggleShowPrint} info={response} />
-      )}
+      <ToastContainer/>
     </>
 
-    )
+  )
 }
 
 export default PaymentDatesReport;
