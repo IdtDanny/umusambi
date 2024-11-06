@@ -1,161 +1,179 @@
-import React, { useState,useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet,Image, ScrollView, } from 'react-native';
-import { AntDesign } from '@expo/vector-icons'
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-const RegistrationScreen = () => {
+const ActivateAccountScreen = ({ navigation }) => {
     const [data, setData] = useState({
-        firstname: "",
-        lastname: "",
         email: "",
-        phone: "",
-        nID: "",
+        nationalID: "",
+        ID: "",
         password: ""
     });
-    const timeoutRef = useRef(null);
-    const [visible, setVisible] = useState(false)
-    const [message,setMessage]=useState('');
-    const closeAlert = () => {
-        setVisible(false);
-    }
-    const showAlert = () => {
-        setVisible(true);
-        clearTimeout(timeoutRef.current)
-        timeoutRef.current = setTimeout(closeAlert, 4000);
-    }
-    const [msg, setMsg] = useState();
-    const isValidEmail = (email) => {
+    const [nationalID, setNationalID] = useState("");
+    const [step, setStep] = useState(1); // 1 = Email, 2 = National ID, 3 = Password
+    const [showNID, setShowNID] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+
+    const showToast = (type, text1, text2) => {
+        Toast.show({
+            type: type,
+            text1: text1,
+            text2: text2,
+            visibilityTime: 3000
+        });
+    };
+
+    const validateEmail = () => {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        return emailPattern.test(email);
+        return emailPattern.test(data.email);
     };
-    const validateInputs = () => {
-        if (
-            data.firstname === "" ||
-            data.lastname === "" ||
-            data.email === "" ||
-            data.phone === "" ||
-            data.nID === "" ||
-            data.password === ""
-        ) {
-            setMsg("Please fill in all fields.");
-            showAlert();
-            return false;
-        }
 
-        // if (!isValidEmail(data.email)) {
-        //     setMsg("Invalid email format.");
-        //     showAlert();
-        //     return false;
-        // }
-
-        if (data.phone.length !== 10) {
-            setMsg("Phone number must be 10 digits.");
-            showAlert();
-            return false;
-        }
-        if (data.nID.length !== 16) {
-            setMsg("National Identity must be 16 characters.");
-            showAlert();
-            return false;
-        }
-        return true;
-    };
-    function RegisterHandler() {
-        if (!validateInputs()) {
+    const handleEmailSubmit = async () => {
+        if (!data.email) {
+            showToast('error', 'Missing Information', 'Please enter an email.');
             return;
         }
+        if (!validateEmail()) {
+            showToast('error', 'Invalid Email', 'Please enter a valid email format.');
+            return;
+        }
+
         const methodOptions = {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
-                "content-type": "application/JSON",
+                "Content-Type": "application/json",
             },
         };
-        fetch("http://192.168.1.65:7000/api/app/signup", methodOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    console.log("response",response);
-                    console.log("INVALID EMAIL OR PASSWORD");
-                    if (response.status == 405) {
-                        setMsg("EMAIL OR PHONE NUMBER USED")
-                        showAlert();
-                    }
-                }
-                else {
-                    if (response.ok) {
-                        console.log("visitor")
-                        showAlert();
-                        setMsg("SUCCESFULLY REGISTERED,")
-                    }
-                }
-            })
-            .catch((error) => {
-                showAlert();
-                setMsg("unexpected error occured");
-                console.log(error);
-            });
-    }
 
+        try {
+            const response = await fetch("http://192.168.43.112:7000/api/app/check", methodOptions);
+            console.log(response.status);
+            if (response.ok) {
+                if (response.status === 200) {
+                    const responseData = await response.json();
+
+                    console.log(responseData);
+                    if (responseData.confirm === true) {
+                        setShowNID(true);
+                        setData({
+                            ...data,
+                            nationalID:responseData.user.nID,
+                            id:responseData.user._id
+                        })
+                        showToast('success', 'Email Verified', 'Please enter your national ID.');
+                    }
+                    else{
+                        showToast('info', 'Email already verified', 'This user is already in the system');
+                    }
+                }
+            } else {
+                showToast('error', 'Verification Failed', 'Email verification failed. Please try again.');
+            }
+        } catch (error) {
+            console.error(error);
+            showToast('error', 'Error', 'System failure.');
+        }
+    };
+
+    const handleNationalIDSubmit = () => {
+        if (!nationalID) {
+            showToast('error', 'Missing Information', 'Please enter your national ID.');
+            return;
+        }
+        // Assuming some validation for National ID if needed
+        if(nationalID===data.nationalID){
+        setShowPassword(true)
+        showToast('success', 'National ID Verified', 'Please proceed to enter your password.');
+        }
+        else{
+            showToast('error', 'Incorrect national ID', 'Enter a correct national ID');
+        }
+    };
+    const handlePasswordSubmit = async () => {
+        if (!data.password) {
+            showToast('error', 'Password Required', 'Please enter a password to activate.');
+            return;
+        }
+    
+        try {
+            const response = await fetch("http://192.168.43.112:7000/api/app/activate", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+    
+            if (response.ok) {
+                showToast('success', 'Account Activated', 'You can now log in.');
+                navigation.goBack()
+            }
+        } catch (error) {
+            console.error("System failure:", error);
+            showToast('error', 'ERROR', 'SYSTEM FAILURE.');
+        }
+    };
+    
     return (
         <>
             <Image
-        source={require("../../assets/header.jpg")} 
-        style={styles.headerImage}
-      />
-        <ScrollView>
-        {msg && visible && (
-                    <View style={styles.alertContainer}>
-                        <AntDesign name="checkcircle" size={24} color="green" />
-                        <Text style={styles.alertText}>{msg}</Text>
+                source={require("../../assets/header.jpg")}
+                style={styles.headerImage}
+            />
+            <ScrollView>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Activate Account</Text>
+                    <View style={styles.formContainer}>
+                        <View style={styles.formGroup}>
+                            <TextInput
+                                style={[styles.input, showNID && styles.disabledInput]}
+                                placeholder="Enter email"
+                                value={data.email}
+                                editable={!showNID}
+                                onChangeText={(text) => setData({ ...data, email: text })}
+                                keyboardType="email-address"
+                            />
+                            {!showNID && (<TouchableOpacity style={styles.button} onPress={handleEmailSubmit}>
+                                <Text style={styles.buttonText}>Next</Text>
+                            </TouchableOpacity>)}
+                        </View>
+
+
+                        <View style={styles.formGroup}>
+                            {showNID && (<TextInput
+                                style={[styles.input, showPassword && styles.disabledInput]}
+                                placeholder="Enter National ID"
+                                value={nationalID}
+                                editable={!showPassword}
+                                onChangeText={setNationalID}
+                            />
+                            )}
+                            {showNID && !showPassword && (<TouchableOpacity style={styles.button} onPress={handleNationalIDSubmit}>
+                                <Text style={styles.buttonText}>Next</Text>
+                            </TouchableOpacity>)
+                            }
+                        </View>
+
+
+                        {showPassword && (
+                            <View style={styles.formGroup}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Enter Password"
+                                    value={data.password}
+                                    onChangeText={(text) => setData({ ...data, password: text })}
+                                    secureTextEntry
+                                />
+                                <TouchableOpacity style={styles.button} onPress={handlePasswordSubmit}>
+                                    <Text style={styles.buttonText}>Activate</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
-                )}
-            <View style={styles.container}>
-            <Text style={styles.title}>Registration</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="First Name"
-                value={data.firstName}
-                onChangeText={(text) => setData({ ...data, firstname: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Last Name"
-                value={data.lastName}
-                onChangeText={(text) => setData({ ...data, lastname: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="email"
-                value={data.email}
-                onChangeText={(text) => setData({ ...data, email: text })}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Phone Number"
-                value={data.phoneNumber}
-                onChangeText={(text) => setData({ ...data, phone: text })}
-                keyboardType="phone-pad"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="National ID"
-                value={data.nationalId}
-                onChangeText={(text) => setData({ ...data, nID: text })}
-                keyboardType="numeric"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={data.password}
-                onChangeText={(text) => setData({ ...data, password: text })}
-                secureTextEntry
-            />
-            <TouchableOpacity style={styles.button}
-                onPress={RegisterHandler}
-            >
-                <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-            </View>
-        </ScrollView>
+                </View>
+            </ScrollView>
+            <Toast />
         </>
     );
 };
@@ -168,6 +186,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         padding: 20,
     },
+    disabledInput: {
+        backgroundColor: '#e0e0e0',
+        color: '#a0a0a0'
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -175,8 +197,16 @@ const styles = StyleSheet.create({
     },
     headerImage: {
         width: '100%',
-        height: 250, // Adjust the height according to your image
-      },
+        height: 250,
+    },
+    formContainer: {
+        width: '100%',
+        alignItems: 'center',
+    },
+    formGroup: {
+        width: '100%',
+        marginBottom: 10,
+    },
     input: {
         width: '100%',
         backgroundColor: 'white',
@@ -187,7 +217,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
     },
     button: {
-        backgroundColor: 'lightpink',
+        backgroundColor: '#007BFF',
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 5,
@@ -196,7 +226,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 
-export default RegistrationScreen;
+export default ActivateAccountScreen;

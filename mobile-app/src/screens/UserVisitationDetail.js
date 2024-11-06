@@ -3,14 +3,9 @@ import { StyleSheet, View, ScrollView,Image } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import { argonTheme } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const PaymentHistoryScreen = () => {
-  // Sample payment history data
-  // const paymentHistory = [
-  //   { id: 1, date: '2023-08-01', amount: '$100.00' },
-  //   { id: 2, date: '2023-07-15', amount: '$50.00' },
-  //   // Add more payment history items here
-  // ];
 
    const [paymentHistory, setPaymentHistory] = useState([]);
 
@@ -39,8 +34,18 @@ const PaymentHistoryScreen = () => {
             if (response.ok) {
                 const data = await response.json();
                 setPaymentHistory(data);
+                Toast.show({
+                  type: 'sucess',
+                  text1: 'Successfull retrieved info',
+                  visibilityTime:3000
+                });
             } else {
                 console.error('Failed to fetch user details');
+                Toast.show({
+                  type: 'error',
+                  text1: 'Hello 👋,Failed to retrieve info',
+                  visibilityTime:3000
+                });
             }
         } catch (error) {
             console.error('Error fetching user details:', error);
@@ -73,6 +78,7 @@ const PaymentHistoryScreen = () => {
           )}
         </Block>
     </ScrollView>
+    <Toast/>
     </>
   );
 };

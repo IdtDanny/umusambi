@@ -7,9 +7,10 @@ import CustomModal from './customModal';
 import Destination1Modal from './customModal1';
 import Destionation2modal from './customModal2';
 import Destination3Modal from './customModal3';
+import Toast from 'react-native-toast-message';
 
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyAHg41fcz6JqNFtY33alYcDP9zqQqAACjI';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDXm7ONH8astixe35sdfLMFnEiHtUN3oGg';
 const MapScreen = () => {
     const [currentLocation, setCurrentLocation] = useState(null);
     const destination = { latitude: -1.984105, longitude: 30.209492 };
@@ -53,6 +54,11 @@ const MapScreen = () => {
     };
 
     useEffect(() => {
+        Toast.show({
+            type: 'info',
+            text1: "LOADING MAP",
+            visibilityTime:3000
+          });
         (async () => {
             const { status } = await Location.requestForegroundPermissionsAsync();
             if (status === 'granted') {
@@ -62,6 +68,11 @@ const MapScreen = () => {
                     longitude: location.coords.longitude,
                 });
                 setIsLoading(false);
+                Toast.show({
+                    type: 'success',
+                    text1: "SUCCESSFULLY LOADED THE MAP",
+                    visibilityTime:3000
+                  });
             }
         })();
     }, []);
@@ -128,6 +139,7 @@ const MapScreen = () => {
                     <Text style={styles.buttonText}>SWAMPS</Text>
                 </TouchableOpacity>
             </View>
+            <Toast />
         </View>
     );
 };

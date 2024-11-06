@@ -7,14 +7,13 @@ import { hashPassword } from "../helpers/hash_match_password";
 class visitorController {
     static async login(req, res) {
         try {
-	   console.log(req.body)
+            console.log(req.body)
             const isValid = await checkCredentials(req.body.email, req.body.password);
             if (isValid) {
                 const token = await UserTokenGenerator(req.body.email);
                 res.status(200).json({ "message": "successfully logged in", "token": token });
             }
-            else if(isValid==null)
-            {
+            else if (isValid == null) {
                 res.status(201).json({ "message": "user doesnt exist" });
             }
             else {
@@ -25,8 +24,8 @@ class visitorController {
         }
     }
     static async registerVisitor(req, res) {
-        const hpass=await hashPassword(req.body.password);
-        const visitor = new visitorModel({...req.body,password:hpass});
+        const hpass = await hashPassword(req.body.password);
+        const visitor = new visitorModel({ ...req.body, password: hpass });
         try {
             const data = await visitor.save();
             res.status(200).json({ "message": "successfully saved" })
@@ -58,12 +57,58 @@ class visitorController {
     static async getHistoryDetails(req, res) {
 
         const visitor = await visitorModel.findOne({ email: req.email });
-        const history=await historyModel.find({visitor:visitor._id});
+        const history = await historyModel.find({ visitor: visitor._id });
         try {
             res.status(200).json(history)
         }
         catch (error) {
             res.status(400).json(error.message);
+        }
+    }
+    static async getHistoryDetails(req, res) {
+
+        const visitor = await visitorModel.findOne({ email: req.email });
+        const history = await historyModel.find({ visitor: visitor._id });
+        try {
+            res.status(200).json(history)
+        }
+        catch (error) {
+            res.status(400).json(error.message);
+        }
+    }
+    static async activatePassword(req, res) {
+        const newPassword = req.body.password
+        const visitor = await visitorModel.findOne({ _id: req.body.id });
+        if (!visitor) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        try {
+            const password = await hashPassword(newPassword)
+            visitor.password = password;
+            await visitor.save();
+            res.status(200).json({ "message": "succesfully activated" })
+        }
+        catch (error) {
+            res.status(400).json(error.message);
+        }
+    }
+
+    static async checkEmail(req, res) {
+        const email = req.body.email
+        try {
+            const visitor = await visitorModel.findOne({ email})
+            if (visitor && !visitor.password) {
+                return res.status(200).json({ confirm: true, user: visitor })
+            }
+            else if (visitor && visitor.password) {
+                return res.status(200).json({ confirm: false, message: "Already has record" })
+            }
+            else {
+                return res.status(400).json({ confirm: false })
+            }
+        } catch (err) {
+            console.log(err)
+            return res.status(500).json({ error: err })
         }
     }
 

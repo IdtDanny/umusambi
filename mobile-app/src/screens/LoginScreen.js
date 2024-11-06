@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const LoginScreen = ({ navigation }) => {
     const [data, setData] = useState({
@@ -31,11 +32,22 @@ const LoginScreen = ({ navigation }) => {
             data.password === ""
         ) {
             setMsg("Please fill in all fields.");
-            showAlert();
+            Toast.show({
+                type: 'error',
+                text1: 'Hello 👋',
+                text2: 'Please you need to fill in all the fields',
+                visibilityTime:3000
+              });
             return false;
         }
         if (!isValidEmail(data.email)) {
             setMsg("Invalid email format.");
+            Toast.show({
+                type: 'error',
+                text1: 'Hello 👋,This is an invalid email',
+                text2: 'Please provide a valid email',
+                visibilityTime:3000
+              });
             showAlert();
             return false;
         }
@@ -52,17 +64,25 @@ const LoginScreen = ({ navigation }) => {
                 "content-type": "application/JSON",
             },
         };
-        fetch("http://192.168.1.65:7000/api/app/login", methodOptions)
+        fetch("http://192.168.43.112:7000/api/app/login", methodOptions)
             .then((response) => {
                 if (!response.ok) {
                     if (response.status == 401) {
                         console.log("INVALID EMAIL OR PASSWORD");
-                        setMsg("INVALID EMAIL OR PASSWORD")
+                        Toast.show({
+                            type: 'error',
+                            text1: 'INVALID EMAIL OR PASSWORD',
+                            visibilityTime:3000
+                          });
                         showAlert();
                     }
                     else {
                         if (response.status == 403) {
-                            setMessage("YOUR ACCOUNT HAS NOT YET BEEN VERIFIED YET")
+                            Toast.show({
+                                type: 'info',
+                                text1: 'YOUR ACCOUNT HAS NOT YET BEEN VERIFIED YET',
+                                visibilityTime:3000
+                              });
                             showAlert()
                         }
                     }
@@ -70,11 +90,19 @@ const LoginScreen = ({ navigation }) => {
                 else {
                     if (response.ok) {
                         if (response.status == 201) {
-                            setMsg("USER DOESN'T EXIST");
+                            Toast.show({
+                                type: 'info',
+                                text1: "USER DOESN'T EXIST",
+                                visibilityTime:3000
+                              });
                             showAlert()
                         }
                         else if (response.status == 202) {
-                            setMsg("INVALID CREDENTIALS");
+                            Toast.show({
+                                type: 'info',
+                                text1: "INVALID CREDENTIALS",
+                                visibilityTime:3000
+                              });
                             showAlert()
                         }
                         else if (response.status == 200) {
@@ -92,10 +120,20 @@ const LoginScreen = ({ navigation }) => {
                     AsyncStorage.setItem('UserToken', value.token)
                         .then(() => {
                             console.log("running here")
+                            Toast.show({
+                                type: 'success',
+                                text1: "SUCCESSFULLY LOGGED IN",
+                                visibilityTime:3000
+                              });
                             // Navigate to the next screen or perform any other action
                             navigation.navigate('Home');
                         })
                         .catch((error) => {
+                            Toast.show({
+                                type: 'error',
+                                text1: "SYSTEM FAILURE",
+                                visibilityTime:3000
+                              });
                             console.log('Error storing token:', error);
                         });
                 }
@@ -113,21 +151,6 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.headerImage}
             />
             <ScrollView>
-                {msg && visible && (
-                    <View style={styles.alertContainer}>
-                        <AntDesign name="checkcircle" size={24} color="green" />
-                        <Text style={styles.alertText}>{msg}</Text>
-                    </View>
-                )}
-                {/* Error Message */}
-                <Text>
-                    {msg && visible && (
-                        <View style={[styles.alertContainer, { backgroundColor: 'red' }]}>
-                            <AntDesign name="closecircle" size={24} color="white" />
-                            <Text style={[styles.alertText, { color: 'white' }]}>{msg}</Text>
-                        </View>
-                    )}
-                </Text>
                 <View style={styles.container}>
                     <Text style={styles.title}>Login</Text>
                     <View style={styles.inputContainer}>
@@ -155,6 +178,7 @@ const LoginScreen = ({ navigation }) => {
                         <Text style={styles.signupText}>Don't have an account? Sign up</Text>
                     </TouchableOpacity>
                 </View>
+                <Toast />
             </ScrollView>
         </>
     );
@@ -184,14 +208,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     button: {
-        backgroundColor: 'lightpink',
-        borderRadius: 20,
+        backgroundColor: '#166FE5',
+        borderRadius: 10, // Slightly curved edges
         paddingVertical: 10,
         paddingHorizontal: 20,
-    },
+        width: '80%', // Makes the button close to full width
+        alignSelf: 'center', // Centers the button horizontally
+    },    
     buttonText: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 20,
+         alignSelf: 'center'
     },
     signupLink: {
         marginTop: 20,

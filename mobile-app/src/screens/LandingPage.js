@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#FF4572', // Pink color
+        color: '#166FE5', // Pink color
         marginBottom: 10,
         textAlign: 'center',
     },
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     exploreButton: {
-        backgroundColor: '#FF4572', // Pink color
+        backgroundColor: '#166FE5', // Pink color
         paddingVertical: 15,
         paddingHorizontal: 40,
         borderRadius: 30,
