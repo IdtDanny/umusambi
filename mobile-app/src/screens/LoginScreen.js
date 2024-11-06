@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
                 "content-type": "application/JSON",
             },
         };
-        fetch("http://192.168.43.112:7000/api/app/login", methodOptions)
+        fetch("http://192.168.1.77:7000/api/app/login", methodOptions)
             .then((response) => {
                 if (!response.ok) {
                     if (response.status == 401) {
@@ -175,7 +175,7 @@ const LoginScreen = ({ navigation }) => {
                     <TouchableOpacity style={styles.signupLink}
                         onPress={() => navigation.navigate("registration")}
                     >
-                        <Text style={styles.signupText}>Don't have an account? Sign up</Text>
+                        <Text style={styles.signupText}>Activate account</Text>
                     </TouchableOpacity>
                 </View>
                 <Toast />

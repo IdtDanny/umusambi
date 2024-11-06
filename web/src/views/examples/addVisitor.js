@@ -185,17 +185,17 @@ const AddVisitor = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-address"
+                            htmlFor="input-country"
                           >
-                            PASSWORD
+                            Phone
                           </label>
                           <Input
                             style={{ color: 'black' }}
                             className="form-control-alternative"
-                            id="input-address"
-                            placeholder="User password"
-                            type="text"
-                            onChange={(e) => setUser({ ...user, password: e.target.value })}
+                            id="input-country"
+                            placeholder="phone"
+                            type="number"
+                            onChange={(e) => setUser({ ...user, phone: e.target.value })}
                             required
                           />
                         </FormGroup>
@@ -221,25 +221,7 @@ const AddVisitor = () => {
                           />
                         </FormGroup>
                       </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Phone
-                          </label>
-                          <Input
-                            style={{ color: 'black' }}
-                            className="form-control-alternative"
-                            id="input-country"
-                            placeholder="phone"
-                            type="number"
-                            onChange={(e) => setUser({ ...user, phone: e.target.value })}
-                            required
-                          />
-                        </FormGroup>
-                      </Col>
+                      
                     </Row>
                   </div>
                   <Row>

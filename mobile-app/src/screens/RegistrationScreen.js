@@ -47,7 +47,7 @@ const ActivateAccountScreen = ({ navigation }) => {
         };
 
         try {
-            const response = await fetch("http://192.168.43.112:7000/api/app/check", methodOptions);
+            const response = await fetch("http://192.168.1.77:7000/api/app/check", methodOptions);
             console.log(response.status);
             if (response.ok) {
                 if (response.status === 200) {
@@ -97,7 +97,7 @@ const ActivateAccountScreen = ({ navigation }) => {
         }
     
         try {
-            const response = await fetch("http://192.168.43.112:7000/api/app/activate", {
+            const response = await fetch("http://192.168.1.77:7000/api/app/activate", {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {
