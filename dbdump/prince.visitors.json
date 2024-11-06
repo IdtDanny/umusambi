@@ -1,0 +1,126 @@
+[{
+  "_id": {
+    "$oid": "671161efdde16a89e33d060c"
+  },
+  "firstname": "Prince ",
+  "lastname": "Niyonshuti ",
+  "nID": "1200080001230079",
+  "email": "princeniyo59@gmail.com",
+  "phone": "0788887597",
+  "createdAt": {
+    "$date": "2024-10-16T19:13:51.436Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-06T17:29:38.128Z"
+  },
+  "__v": 0,
+  "password": "$2b$10$913.yT2HAaeGKOTIbNCcTusVSNodv9T3aGvy9CbL7nM6USxkirA7C"
+},
+{
+  "_id": {
+    "$oid": "6717a8366b339cb2af61cd22"
+  },
+  "firstname": "mugisha",
+  "lastname": "Steven",
+  "nID": "1199970009812",
+  "email": "mugisha@gmail.com",
+  "phone": "0787878788",
+  "password": "$2b$10$C9tj2eHIPgnaW5VNVFLgpOpNgCpo2CxFqoXCB8PRkIP5BpZBL6kOK",
+  "createdAt": {
+    "$date": "2024-10-22T13:27:18.913Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-22T13:29:46.310Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6718fb492ecf6438475dbf15"
+  },
+  "firstname": "manzi",
+  "lastname": "kevin",
+  "nID": "11999700091001",
+  "email": "mugisha@gmail.com",
+  "phone": "0787878788",
+  "password": "$2b$10$34TS1MVEdB7jT9g49F2fw.l8zX8MGw6kIX8k7Cp3IwR.mNe/XiM3y",
+  "createdAt": {
+    "$date": "2024-10-23T13:34:01.771Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-23T13:34:01.771Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67193e32bbeb8bb15c05f060"
+  },
+  "firstname": "mugisha",
+  "lastname": "muhg",
+  "nID": "1199970009812666",
+  "email": "mugih@gmail.com",
+  "phone": "0787878788",
+  "password": "$2b$10$67Olnh.bDjPq8ulYcGu4XuZUhkmEjg.S1F13hNXbXZi/Rjx8TyNce",
+  "createdAt": {
+    "$date": "2024-10-23T18:19:30.220Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-23T18:19:30.220Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67193e5fbbeb8bb15c05f070"
+  },
+  "firstname": "mugisha",
+  "lastname": "muhg",
+  "nID": "11999700098127887",
+  "email": "mugia@gmail.com",
+  "phone": "0787878788",
+  "password": "$2b$10$ENhXmuKfZdPIJ.B2K3PulOfIZGTBxXEMpErcsaGy/4v.bs.VtDIuC",
+  "createdAt": {
+    "$date": "2024-10-23T18:20:15.828Z"
+  },
+  "updatedAt": {
+    "$date": "2024-10-23T18:20:15.828Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "672bdfcf127ae8da72db4b3e"
+  },
+  "firstname": "mugisha",
+  "lastname": "mugisha",
+  "nID": "1200080001212",
+  "email": "mugish@gmail.com",
+  "phone": "0784054389",
+  "password": "$2b$10$mR/7nEg0oqWylJdHlzM5DefTBgZBI9A1jecGXK2NvAgs5ASzZl/d6",
+  "createdAt": {
+    "$date": "2024-11-06T21:29:51.879Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-06T21:29:51.879Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "672be0e739681dcfdb5990e8"
+  },
+  "firstname": "manzi",
+  "lastname": "kevin",
+  "nID": "1200080010012",
+  "email": "kevin@gmail.com",
+  "phone": "0783052389",
+  "createdAt": {
+    "$date": "2024-11-06T21:34:31.788Z"
+  },
+  "updatedAt": {
+    "$date": "2024-11-06T21:38:01.552Z"
+  },
+  "__v": 0,
+  "password": "$2b$10$tcB.7nt68k8daSoOVtc5hu5QvrQwnlm00Xmdh8X0XO/tUbQ4FOMqq"
+}]
