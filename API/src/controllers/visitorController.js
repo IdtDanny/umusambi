@@ -25,6 +25,7 @@ class visitorController {
     }
     static async registerVisitor(req, res) {
         const visitor = new visitorModel(req.body);
+        console.log(req.body)
         try {
             const data = await visitor.save();
             res.status(200).json({ "message": "successfully saved" })

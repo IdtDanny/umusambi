@@ -23,8 +23,7 @@ class adminController {
         }
     }
     static async addvisitor(req, res) {
-        const hpass=await hashPassword(req.body.password);
-        const visitor = new visitorModel(req.body,req.body.password=hpass);
+        const visitor = new visitorModel(req.body);
         try {
             const data = await visitor.save();
             res.status(200).json({ "message": "successfully saved" })
