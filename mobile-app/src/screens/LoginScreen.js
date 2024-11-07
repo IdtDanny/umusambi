@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView 
 import { AntDesign } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import API from '../../constants/API';
 
 const LoginScreen = ({ navigation }) => {
     const [data, setData] = useState({
@@ -64,8 +65,9 @@ const LoginScreen = ({ navigation }) => {
                 "content-type": "application/JSON",
             },
         };
-        fetch("http://192.168.1.77:7000/api/app/login", methodOptions)
+        fetch(`http:${API}/api/app/login`, methodOptions)
             .then((response) => {
+                console.log(API);
                 if (!response.ok) {
                     if (response.status == 401) {
                         console.log("INVALID EMAIL OR PASSWORD");
@@ -103,7 +105,6 @@ const LoginScreen = ({ navigation }) => {
                                 text1: "INVALID CREDENTIALS",
                                 visibilityTime:3000
                               });
-                            showAlert()
                         }
                         else if (response.status == 200) {
                             return response.json();
@@ -114,10 +115,10 @@ const LoginScreen = ({ navigation }) => {
             .then((value) => {
                 console.log("here",value);
                 if (value.message === "successfully logged in") {
-                    // Store the token in SecureStore
-                    console.log("here");
-                    
+                    // Store the token in SecureStore                    
                     AsyncStorage.setItem('UserToken', value.token)
+                    const usernames=value.user.firstname +" "+value.user.lastname
+                    AsyncStorage.setItem("user",usernames)
                         .then(() => {
                             console.log("running here")
                             Toast.show({

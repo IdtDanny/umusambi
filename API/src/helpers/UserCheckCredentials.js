@@ -5,7 +5,6 @@ const checkCredentials = async (e, password) => {
 	console.log(e)
     try {
         const user = await visitorModel.findOne({ email: e });
-	console.log(user)
         if (user == null) {
             return null;
         }

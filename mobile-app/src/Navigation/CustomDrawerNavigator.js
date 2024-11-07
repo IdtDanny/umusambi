@@ -32,16 +32,16 @@ function CustomDrawerContent(props) {
                 </Block>
                 <Block flex style={{ paddingLeft: 8, paddingRight: 14 }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-                        <DrawerItem label="welcome"
+                        <DrawerItem label="welcome" icon="dashboard"
                             focused={focusedItem === 'welcome'}
                             onPress={() => handleItemPress('welcome')} />
-                        <DrawerItem label="history"
+                        <DrawerItem label="history" icon="credit-card"
                             focused={focusedItem === 'history'}
                             onPress={() => handleItemPress('history')} />
-                        <DrawerItem label='user profile'
+                        <DrawerItem label='user profile' icon="user"
                             focused={focusedItem === 'user profile'}
                             onPress={() => handleItemPress('user profile')} />
-                        <DrawerItem label='map'
+                        <DrawerItem label='map' icon="map-marker"
                             focused={focusedItem === 'map'}
                             onPress={() => handleItemPress('map')} />
                     </ScrollView>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     headerText: {
-        color: theme.COLORS.PRIMARY, // Customize the color to your preference
+        color: "#166FE5",
         fontWeight: 'bold',
         fontSize: 20, // Customize the font size to your preference
         letterSpacing: 1, // Adjust letter spacing for a futuristic look

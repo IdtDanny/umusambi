@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
+import API from '../../constants/API';
 
 const ActivateAccountScreen = ({ navigation }) => {
     const [data, setData] = useState({
@@ -47,7 +48,7 @@ const ActivateAccountScreen = ({ navigation }) => {
         };
 
         try {
-            const response = await fetch("http://192.168.1.77:7000/api/app/check", methodOptions);
+            const response = await fetch(`http:${API}/api/app/check`, methodOptions);
             console.log(response.status);
             if (response.ok) {
                 if (response.status === 200) {
@@ -97,7 +98,7 @@ const ActivateAccountScreen = ({ navigation }) => {
         }
     
         try {
-            const response = await fetch("http://192.168.1.77:7000/api/app/activate", {
+            const response = await fetch(`http:${API}/api/app/activate`, {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {

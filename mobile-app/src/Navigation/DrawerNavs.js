@@ -18,10 +18,10 @@ const DrawerNavigator = () => {
     initialRouteName='welcome'
     >
       <Drawer.Screen name="welcome" component={LandingPage} />
-      <Drawer.Screen name="history" component={PaymentHistoryScreen}/>
-      <Drawer.Screen name="reg" component={LoginScreenn}/>
-      <Drawer.Screen name="user profile" component={UserDetailScreen}/>
-      <Drawer.Screen name="map" component={MapScreen}/>
+      <Drawer.Screen name="history"  component={PaymentHistoryScreen}/>
+      <Drawer.Screen name="reg"  component={LoginScreenn}/>
+      <Drawer.Screen name="user profile"  component={UserDetailScreen}/>
+      <Drawer.Screen name="map"  component={MapScreen}/>
     </Drawer.Navigator>
   );
 };

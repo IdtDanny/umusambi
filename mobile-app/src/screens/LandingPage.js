@@ -1,26 +1,58 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React,{useEffect,useState} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LandingPage = ({navigation}) => {
+const SavingsScreen = ({ navigation }) => {
+  const [user,setUser]=useState();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const username = await AsyncStorage.getItem('user');
+      setUser(username);
+    };
+  
+    fetchUser();
+  }, []);
     return (
         <View style={styles.container}>
-            <Image
-                source={require('../../assets/header.jpg')}
-                style={styles.backgroundImage}
-            />
-            <View style={styles.content}>
-                <Text style={styles.title}>Welcome to Umusambi Village</Text>
-                <Text style={styles.subtitle}>A Serene Escape for You</Text>
-                <Text style={styles.description}>
-                    Discover the picturesque Umusambi Village – a place where tranquility meets adventure.
-                    Immerse yourself in the lush landscapes, unwind by the serene rivers, and explore
-                    the hidden treasures of nature.
-                </Text>
-                <TouchableOpacity style={styles.exploreButton}
-                onPress={()=>navigation.navigate("map")}
-                >
-                    <Text style={styles.buttonText}>Explore Now</Text>
-                </TouchableOpacity>
+            {/* Background Wrapper with Light Blue Color */}
+            <View style={styles.accountCardContainer}>
+                {/* Account Card */}
+                <View style={styles.accountCard}>
+                    <Text style={styles.accountType}>Visitor account</Text>
+                    <Text style={styles.accountNumber}>{user} ****</Text>
+                    <View style={styles.balanceContainer}>
+                        <Text style={styles.balanceText}>**********************</Text>
+                    </View>
+                    <TouchableOpacity style={styles.exploreButton} onPress={()=>navigation.navigate("map")}>
+                        <Text style={styles.exploreButtonText}>Explore Now</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* Action Grid */}
+            <View style={styles.actionGrid}>
+                {[
+                    { label: "Dashboard", icon: "dashboard",navigate:"welcome" },
+                    { label: "History", icon: "history",navigate:"history" },
+                    { label: "Map", icon: "map-marker",navigate:"map" },
+                    { label: "User Profile", icon: "user",navigate:"user profile" },
+                ].map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.actionButton} onPress={()=>navigation.navigate(item.navigate)}>
+                        <FontAwesome name={item.icon} size={24} color="#007AFF" />
+                        <Text style={styles.actionText}>{item.label}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+            {/* Savings Goal Section */}
+            <TouchableOpacity style={styles.savingsGoal} onPress={()=>navigation.navigate("map")}>
+                <Text style={styles.goalText}>Navigate Umusambi? ➔</Text>
+                <Text style={styles.goalTextBold}>Let's go together!</Text>
+            </TouchableOpacity>
+            <View style={styles.savingsGoal}>
+                <Text style={styles.goalText}>Interactive mobile app ➔</Text>
+                <Text style={styles.goalTextBold}>Interactive app to visit umusambi village!</Text>
             </View>
         </View>
     );
@@ -29,52 +61,101 @@ const LandingPage = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#F0F4FF',
         alignItems: 'center',
-        justifyContent: 'center',
+        paddingTop: 20,
     },
-    backgroundImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-        position: 'absolute',
-    },
-    content: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent white background
-        padding: 20,
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#166FE5', // Pink color
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 18,
-        color: '#FFA06D', // Coral color
+    accountCardContainer: {
+        backgroundColor: '#E3F2FD', // Light blue background
+        width: '90%',
+        padding: 10,
+        borderRadius: 15,
         marginBottom: 20,
-        textAlign: 'center',
     },
-    description: {
+    accountCard: {
+        backgroundColor: '#0D47A1', // Darker blue card color
+        width: '100%',
+        padding: 20,
+        borderRadius: 12,
+    },
+    accountType: {
+        color: '#FFF',
         fontSize: 16,
-        color: '#333',
-        marginBottom: 30,
-        textAlign: 'center',
+        fontWeight: '500',
+    },
+    accountNumber: {
+        color: '#FFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginVertical: 8,
+    },
+    balanceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    balanceText: {
+        color: '#FFF',
+        fontSize: 18,
+        fontWeight: '500',
+    },
+    eyeIcon: {
+        marginLeft: 10,
     },
     exploreButton: {
-        backgroundColor: '#166FE5', // Pink color
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 30,
+        backgroundColor: '#F3E350',
+        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        alignItems: 'center',
+        marginTop: 10,
     },
-    buttonText: {
-        color: '#FFF', // White color
-        fontSize: 18,
+    exploreButtonText: {
+        color: '#FFF',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    actionGrid: {
+        backgroundColor: '#FFF',
+        width: '90%',
+        borderRadius: 12,
+        paddingVertical: 20,
+        paddingHorizontal: 10,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+    },
+    actionButton: {
+        alignItems: 'center',
+        width: '25%',
+        marginVertical: 10,
+    },
+    actionText: {
+        color: '#007AFF',
+        fontSize: 12,
+        marginTop: 5,
+        textAlign: 'center',
+    },
+    savingsGoal: {
+        backgroundColor: '#0D47A1',
+        width: '90%',
+        borderRadius: 12,
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        alignItems: 'flex-start',
+        marginTop: 20,
+    },
+    goalText: {
+        color: '#FFF',
+        fontSize: 14,
+        marginBottom: 5,
+    },
+    goalTextBold: {
+        color: '#FFF',
+        fontSize: 16,
         fontWeight: 'bold',
     },
 });
 
-export default LandingPage;
+export default SavingsScreen;

@@ -1,122 +1,166 @@
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, View, ScrollView,Image } from 'react-native';
-import { Block, Text, theme } from 'galio-framework';
-import { argonTheme } from '../constants';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import { formatDateInNumbers } from '../helpers/dateHelper';
+import API from '../../constants/API';
+
+
+const { width, height } = Dimensions.get('window');
+
 
 const PaymentHistoryScreen = () => {
 
-   const [paymentHistory, setPaymentHistory] = useState([]);
+  const [paymentHistory, setPaymentHistory] = useState([]);
 
-    useEffect(() => {
-        fetchUserDetails();
-    }, []);
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
 
-    const fetchUserDetails = async () => {
-        const token = await AsyncStorage.getItem('UserToken');
-        console.log(token)
+  const fetchUserDetails = async () => {
+    const token = await AsyncStorage.getItem('UserToken');
 
-        if (!token) {
-            console.log("token not available");
-            return;
-        }
+    if (!token) {
+      console.log("Token not available");
+      return;
+    }
 
-        const requestOptions = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-auth-token': token,
-            },
-        };
-        try {
-            const response = await fetch('http://192.168.43.236:7000/api/app/getuserhistory',requestOptions);
-            if (response.ok) {
-                const data = await response.json();
-                setPaymentHistory(data);
-                Toast.show({
-                  type: 'sucess',
-                  text1: 'Successfull retrieved info',
-                  visibilityTime:3000
-                });
-            } else {
-                console.error('Failed to fetch user details');
-                Toast.show({
-                  type: 'error',
-                  text1: 'Hello 👋,Failed to retrieve info',
-                  visibilityTime:3000
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching user details:', error);
-        }
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token,
+      },
     };
-
+    
+    try {
+      const response = await fetch(`http://${API}/api/app/getuserhistory`, requestOptions);
+      if (response.ok) {
+        const data = await response.json();
+        setPaymentHistory(data);        
+        Toast.show({
+          type: 'success',
+          text1: 'Successfully retrieved info',
+          visibilityTime: 3000
+        });
+      } else {
+        console.error('Failed to fetch user details');
+        Toast.show({
+          type: 'error',
+          text1: 'Hello 👋, failed to retrieve info',
+          visibilityTime: 3000
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  };
 
   return (
-    <>
-    <Image
-        source={require("../../assets/header.jpg")} 
-        style={styles.headerImage}
-      />
-      <Text h4 style={styles.title}>Visitation History</Text>       
-    <ScrollView style={styles.container}>
-        <Block style={styles.content}>
-          {paymentHistory.length === 0 ? (
-            <Text style={styles.emptyHistoryText}>Empty history</Text>
-          ) : (
-            paymentHistory.map((payment) => (
-              <Block key={payment.id} style={styles.paymentContainer}>
-                <Text size={16} color={argonTheme.COLORS.ACTIVE} bold>
-                  {payment.date}
-                </Text>
-                <Text size={16} style={styles.paymentAmount}>
-                  3000 RWF
-                </Text>
-              </Block>
+    <View style={styles.container}>
+      {/* Full-width Add Account Button at the Top */}
+      <TouchableOpacity style={styles.fullWidthAddAccountButton}>
+        <FontAwesome name="credit-card" size={24} color="#ffffff" />
+        <Text style={styles.addAccountButtonText}>Visitation history</Text>
+      </TouchableOpacity>
+
+      {/* Spacer to avoid overlap with Add Account button */}
+      <View style={{ height: height * 0.25 }} />
+
+      {/* Detailed Info Card */}
+      <View style={styles.infoCard}>
+        <View style={styles.infoIconContainer}>
+          <FontAwesome name="credit-card" size={24} color="#0D47A1" />
+        </View>
+        <ScrollView style={styles.infoTextContainer}>
+          <Text style={styles.infoTitle}>Payment History</Text>
+          {paymentHistory.length > 0 ? (
+            paymentHistory.map((payment, index) => (
+              <View style={styles.rowTextContainer} key={index}>
+                <Text style={styles.infoDescription}>3000 RWF</Text>
+                <Text style={styles.infoDescription}>{formatDateInNumbers(payment.createdAt)}</Text>
+              </View>
             ))
+          ) : (
+            <Text style={styles.infoDescription}>No payment history available.</Text>
           )}
-        </Block>
-    </ScrollView>
-    <Toast/>
-    </>
+        </ScrollView>
+      </View>
+      <Toast/>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.COLORS.WHITE,
+    backgroundColor: '#F0F4FF',
+    alignItems: 'center',
+    paddingTop: 20,
   },
-  content: {
-    padding: theme.SIZES.BASE,
+  fullWidthAddAccountButton: {
+    backgroundColor: '#0D47A1',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width,
+    height: height * 0.25,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  headerImage: {
-    width: '100%',
-    height: 150, // Adjust the height according to your image
+  addAccountButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+    marginLeft: 10,
   },
-  title: {
-    marginBottom: theme.SIZES.BASE * 2,
-    fontWeight: 'bold',
+  infoCard: {
+    backgroundColor: '#ffffff',
+    width: '90%',
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  paymentContainer: {
-    marginBottom: theme.SIZES.BASE * 2,
-    padding: theme.SIZES.BASE,
-    borderWidth: 1,
-    borderColor: argonTheme.COLORS.BORDER,
-    borderRadius: theme.SIZES.BASE / 2,
+  infoIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#E3F2FD',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  infoTextContainer: {
+    flex: 1,
+  },
+  infoTitle: {
+    color: '#0D47A1',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  rowTextContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    marginTop: 4,
   },
-  paymentAmount: {
-    fontWeight: 'bold',
-  },
-  emptyHistoryText: {
-    textAlign: 'center',
-    color: argonTheme.COLORS.MUTED,
-    fontStyle: 'italic',
-    marginBottom: theme.SIZES.BASE,
+  infoDescription: {
+    color: '#607D8B',
+    fontSize: 14,
   },
 });
 

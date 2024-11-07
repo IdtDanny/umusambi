@@ -11,7 +11,9 @@ class visitorController {
             const isValid = await checkCredentials(req.body.email, req.body.password);
             if (isValid) {
                 const token = await UserTokenGenerator(req.body.email);
-                res.status(200).json({ "message": "successfully logged in", "token": token });
+                const user = await visitorModel.findOne({ email: req.body.email });
+                user.password=""
+                res.status(200).json({ "message": "successfully logged in", "token": token,user });
             }
             else if (isValid == null) {
                 res.status(201).json({ "message": "user doesnt exist" });
