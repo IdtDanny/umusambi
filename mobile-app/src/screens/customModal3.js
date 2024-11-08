@@ -6,7 +6,7 @@ const Destination3Modal = ({ isVisible, toggleModal }) => {
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Image source={require('../../assets/header.jpg')} style={styles.image} />
+          <Image source={require('../../assets/download.webp')} style={styles.image} />
           <Text style={styles.description}>
           The African cranes at Umusambi Village are a captivating sight to behold.
            With their elegant long legs, distinctive elongated necks, 
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   closeButton: {
-    backgroundColor: 'lightpink',
+    backgroundColor: '#1877F2',
     padding: 10,
     borderRadius: 5,
   },

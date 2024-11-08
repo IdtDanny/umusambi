@@ -6,7 +6,7 @@ const Destination1Modal = ({ isVisible, toggleModal }) => {
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Image source={require('../../assets/header.jpg')} style={styles.image} />
+          <Image source={require('../../assets/buuterfly.jpg')} style={styles.image} />
           <Text style={styles.description}>
             Butterflies are enchanting insects known for their vibrant colors,
             delicate wings, and graceful flight.
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   closeButton: {
-    backgroundColor: 'lightpink',
+    backgroundColor: '#1877F2',
     padding: 10,
     borderRadius: 5,
   },

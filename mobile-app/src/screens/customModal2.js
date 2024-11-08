@@ -6,7 +6,7 @@ const Destionation2modal = ({ isVisible, toggleModal }) => {
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Image source={require('../../assets/header.jpg')} style={styles.image} />
+          <Image source={require('../../assets/bird.jpg')} style={styles.image} />
           <Text style={styles.description}>
           Umusambi Village stands as a unique conservation haven,
            where a diverse array of avian species have found a new home. 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   closeButton: {
-    backgroundColor: 'lightpink',
+    backgroundColor: '#1877F2',
     padding: 10,
     borderRadius: 5,
   },

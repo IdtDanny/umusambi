@@ -6,16 +6,14 @@ const CustomModal = ({ isVisible, toggleModal }) => {
     <Modal visible={isVisible} animationType="slide" transparent={true}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Image source={require('../../assets/header.jpg')} style={styles.image} />
+          <Image source={require('../../assets/birding.webp')} style={styles.image} />
           <Text style={styles.description}>
-            hello your description wil go here
-            hello your description wil go here
-            hello your description wil go here
-            hello your description wil go here
-            hello your description wil go here
-            hello your description wil go here
-            hello your description wil go here
-            hello your description wil go here
+          Umusambi Village is a wildlife sanctuary near Kigali, 
+          Rwanda, dedicated to rescuing and rehabilitating endangered Grey Crowned Cranes. 
+          Established by the Rwanda Wildlife Conservation Association, it provides a safe, 
+          natural habitat where these rescued birds can live and fly freely. 
+          The sanctuary also serves as a protected wetland, promoting biodiversity 
+          and offering eco-tourism and educational opportunities on wildlife conservation.
           </Text>
           <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
             <Text style={styles.closeButtonText}>Close</Text>
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   closeButton: {
-    backgroundColor: 'lightpink',
+    backgroundColor: '#1877F2',
     padding: 10,
     borderRadius: 5,
   },
